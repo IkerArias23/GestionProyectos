@@ -1,0 +1,162 @@
+classDiagram
+    %% Capa de Presentación
+    class WebInterface {
+        +showDashboard()
+        +displayProjects()
+        +showAnalytics()
+    }
+    
+    class MobileApp {
+        +showDashboard()
+        +displayProjects()
+        +showAnalytics()
+    }
+    
+    %% Capa de API
+    class APIGateway {
+        +routeRequest()
+        +authenticateUser()
+        +validateRequest()
+    }
+    
+    %% Capa de Aplicación/Servicios
+    class ProjectService {
+        -projectRepository
+        +createProject()
+        +updateProject()
+        +deleteProject()
+        +getProjectDetails()
+    }
+    
+    class TaskService {
+        -taskRepository
+        +createTask()
+        +updateTaskStatus()
+        +assignTask()
+        +getTasksForProject()
+    }
+    
+    class UserService {
+        -userRepository
+        +registerUser()
+        +authenticateUser()
+        +updateUserProfile()
+        +getUserPermissions()
+    }
+    
+    class AIService {
+        -mlModelManager
+        -predictiveAnalyzer
+        +predictTaskCompletion()
+        +suggestOptimizations()
+        +analyzeProductivity()
+        +detectRisks()
+    }
+    
+    class NotificationService {
+        -notificationRepository
+        +sendNotification()
+        +scheduleNotification()
+        +getNotificationPreferences()
+    }
+    
+    %% Capa de Dominio
+    class Project {
+        -id
+        -name
+        -description
+        -startDate
+        -endDate
+        -status
+        -members
+        -tasks
+        +calculateProgress()
+        +getTimeline()
+    }
+    
+    class Task {
+        -id
+        -title
+        -description
+        -status
+        -assignee
+        -dueDate
+        -priority
+        +updateStatus()
+        +reassign()
+    }
+    
+    class User {
+        -id
+        -name
+        -email
+        -role
+        -preferences
+        +hasPermission()
+    }
+    
+    %% Capa de Infraestructura
+    class ProjectRepository {
+        +findById()
+        +save()
+        +delete()
+        +findAll()
+    }
+    
+    class TaskRepository {
+        +findById()
+        +findByProject()
+        +save()
+        +delete()
+    }
+    
+    class UserRepository {
+        +findById()
+        +findByEmail()
+        +save()
+        +delete()
+    }
+    
+    class MLModelManager {
+        +loadModel()
+        +trainModel()
+        +predict()
+        +evaluateModel()
+    }
+    
+    class DatabaseConnector {
+        +connect()
+        +executeQuery()
+        +beginTransaction()
+        +commitTransaction()
+    }
+    
+    %% Definición de relaciones
+    WebInterface --> APIGateway
+    MobileApp --> APIGateway
+    
+    APIGateway --> ProjectService
+    APIGateway --> TaskService
+    APIGateway --> UserService
+    APIGateway --> AIService
+    APIGateway --> NotificationService
+    
+    ProjectService --> ProjectRepository
+    TaskService --> TaskRepository
+    UserService --> UserRepository
+    
+    ProjectService --> Project
+    TaskService --> Task
+    UserService --> User
+    
+    AIService --> Project
+    AIService --> Task
+    AIService --> MLModelManager
+    
+    ProjectRepository --> DatabaseConnector
+    TaskRepository --> DatabaseConnector
+    UserRepository --> DatabaseConnector
+    
+    Project *-- Task : contiene
+    Project o-- User : tiene miembros
+    Task --> User : asignada a
